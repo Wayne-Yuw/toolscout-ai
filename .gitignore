@@ -10,6 +10,9 @@ build/
 dist/
 .cache/
 
+# TypeScript
+*.tsbuildinfo
+
 # Dependencies
 package-lock.json
 yarn.lock

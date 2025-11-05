@@ -1,7 +1,7 @@
 'use client';
 
 import { useLocale } from 'next-intl';
-import { usePathname, useRouter } from 'next/navigation';
+import { usePathname, useRouter } from '@/i18n/routing';
 import { locales, localeNames, localeFlags, type Locale } from '@/i18n/config';
 import { useState } from 'react';
 
@@ -12,11 +12,8 @@ export default function LanguageSwitcher() {
   const [isOpen, setIsOpen] = useState(false);
 
   const handleLanguageChange = (newLocale: Locale) => {
-    // Remove the current locale from the pathname
-    const pathnameWithoutLocale = pathname.replace(`/${locale}`, '');
-
-    // Navigate to the new locale
-    router.push(`/${newLocale}${pathnameWithoutLocale}`);
+    // Use the router from next-intl which handles locale switching automatically
+    router.replace(pathname, { locale: newLocale });
     setIsOpen(false);
   };
 
