@@ -18,10 +18,21 @@ toolscout-ai/
 ├── frontend/                 # Next.js frontend application
 │   ├── src/
 │   │   ├── app/             # Next.js 15 App Router
+│   │   │   └── [locale]/    # Locale-based routing
+│   │   │       ├── layout.tsx
+│   │   │       └── page.tsx
 │   │   ├── components/      # Reusable components
+│   │   │   └── LanguageSwitcher.tsx
+│   │   ├── i18n/            # Internationalization
+│   │   │   ├── config.ts    # i18n configuration
+│   │   │   ├── request.ts   # Server-side i18n setup
+│   │   │   └── messages/    # Translation files
+│   │   │       ├── en.json  # English translations
+│   │   │       └── zh.json  # Chinese translations
 │   │   ├── lib/             # Utility functions
 │   │   ├── types/           # TypeScript types
-│   │   └── styles/          # Global styles
+│   │   ├── middleware.ts    # Next.js middleware for i18n
+│   │   └── globals.css      # Global styles
 │   ├── public/              # Static assets
 │   └── package.json
 │
@@ -104,6 +115,31 @@ GOOGLE_CSE_ENGINE_ID=your_engine_id
 REDIS_URL=redis://localhost:6379
 ```
 
+## 🌍 Internationalization (i18n)
+
+ToolScout AI supports multiple languages out of the box:
+
+**Supported Languages:**
+- 🇨🇳 Chinese (中文) - Default
+- 🇺🇸 English
+
+**Features:**
+- Language switcher in the top-right corner
+- Automatic locale detection
+- URL-based locale routing (`/zh/*`, `/en/*`)
+- Complete translation coverage for UI and content
+
+**Adding a New Language:**
+
+1. Add locale to configuration in `frontend/src/i18n/config.ts`:
+```typescript
+export const locales = ['en', 'zh', 'fr'] as const; // Add 'fr' for French
+```
+
+2. Create translation file: `frontend/src/i18n/messages/fr.json`
+
+3. Update locale names and flags in config
+
 ## 📦 Tech Stack
 
 ### Frontend
@@ -112,6 +148,7 @@ REDIS_URL=redis://localhost:6379
 - **Styling:** Tailwind CSS + shadcn/ui
 - **State Management:** Zustand
 - **HTTP Client:** Axios
+- **i18n:** next-intl
 
 ### Backend
 - **Framework:** FastAPI

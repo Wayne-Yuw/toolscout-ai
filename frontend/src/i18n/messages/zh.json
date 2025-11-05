@@ -1,0 +1,80 @@
+{
+  "common": {
+    "appName": "ToolScout AI",
+    "language": "语言",
+    "loading": "加载中...",
+    "error": "错误",
+    "success": "成功"
+  },
+  "nav": {
+    "home": "首页",
+    "about": "关于",
+    "docs": "文档"
+  },
+  "home": {
+    "title": "ToolScout AI",
+    "subtitle": "为内容创作者打造的AI工具分析助手",
+    "searchTitle": "搜索工具",
+    "searchPlaceholder": "例如：Notion 或 https://www.notion.so",
+    "searchDescription": "输入工具名称或网站URL开始分析",
+    "analyzeButton": "分析工具",
+    "tip": "提示",
+    "tipContent": "输入工具名称，我们会找到官方网站，或直接粘贴完整URL进行分析",
+    "popularTools": "热门工具",
+    "features": {
+      "audienceAnalysis": {
+        "title": "受众分析",
+        "description": "多角度受众细分，提供痛点和解决方案"
+      },
+      "scriptGeneration": {
+        "title": "脚本生成",
+        "description": "为您的平台和风格量身定制的即用型视频脚本"
+      },
+      "toolDiscovery": {
+        "title": "工具发现",
+        "description": "智能推荐相似和互补的工具"
+      }
+    },
+    "devMode": {
+      "title": "开发模式",
+      "message": "这是项目骨架。核心功能将在后续迭代中实现。"
+    }
+  },
+  "analysis": {
+    "overview": "概览",
+    "audiences": "受众群体",
+    "scripts": "视频脚本",
+    "recommendations": "推荐工具",
+    "export": "导出",
+    "formats": {
+      "markdown": "Markdown",
+      "word": "Word",
+      "pdf": "PDF",
+      "json": "JSON",
+      "txt": "文本"
+    }
+  },
+  "audience": {
+    "painPoints": "痛点",
+    "solutions": "解决方案",
+    "scenarios": "使用场景"
+  },
+  "script": {
+    "platform": "平台",
+    "style": "风格",
+    "duration": "时长",
+    "cameraHint": "画面提示",
+    "styles": {
+      "dryGoods": "干货型",
+      "storytelling": "故事型",
+      "comparison": "对比型",
+      "painPoint": "痛点型"
+    },
+    "platforms": {
+      "tiktok": "抖音",
+      "xiaohongshu": "小红书",
+      "bilibili": "哔哩哔哩",
+      "youtube": "YouTube"
+    }
+  }
+}

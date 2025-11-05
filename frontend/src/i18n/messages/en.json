@@ -1,0 +1,80 @@
+{
+  "common": {
+    "appName": "ToolScout AI",
+    "language": "Language",
+    "loading": "Loading...",
+    "error": "Error",
+    "success": "Success"
+  },
+  "nav": {
+    "home": "Home",
+    "about": "About",
+    "docs": "Docs"
+  },
+  "home": {
+    "title": "ToolScout AI",
+    "subtitle": "AI-powered tool analysis assistant for content creators",
+    "searchTitle": "Search for a Tool",
+    "searchPlaceholder": "e.g., Notion or https://www.notion.so",
+    "searchDescription": "Enter a tool name or website URL to begin analysis",
+    "analyzeButton": "Analyze Tool",
+    "tip": "Tip",
+    "tipContent": "Enter a tool name and we'll find the official website, or paste the full URL to analyze directly",
+    "popularTools": "Popular Tools",
+    "features": {
+      "audienceAnalysis": {
+        "title": "Audience Analysis",
+        "description": "Multi-angle audience segmentation with pain points and solutions"
+      },
+      "scriptGeneration": {
+        "title": "Script Generation",
+        "description": "Ready-to-use video scripts tailored to your platform and style"
+      },
+      "toolDiscovery": {
+        "title": "Tool Discovery",
+        "description": "Smart recommendations for similar and complementary tools"
+      }
+    },
+    "devMode": {
+      "title": "Development Mode",
+      "message": "This is a project skeleton. Core functionality will be implemented in upcoming iterations."
+    }
+  },
+  "analysis": {
+    "overview": "Overview",
+    "audiences": "Audiences",
+    "scripts": "Video Scripts",
+    "recommendations": "Recommendations",
+    "export": "Export",
+    "formats": {
+      "markdown": "Markdown",
+      "word": "Word",
+      "pdf": "PDF",
+      "json": "JSON",
+      "txt": "Text"
+    }
+  },
+  "audience": {
+    "painPoints": "Pain Points",
+    "solutions": "Solutions",
+    "scenarios": "Use Cases"
+  },
+  "script": {
+    "platform": "Platform",
+    "style": "Style",
+    "duration": "Duration",
+    "cameraHint": "Camera Hint",
+    "styles": {
+      "dryGoods": "Informational",
+      "storytelling": "Storytelling",
+      "comparison": "Comparison",
+      "painPoint": "Pain Point"
+    },
+    "platforms": {
+      "tiktok": "TikTok",
+      "xiaohongshu": "XiaoHongShu",
+      "bilibili": "Bilibili",
+      "youtube": "YouTube"
+    }
+  }
+}
