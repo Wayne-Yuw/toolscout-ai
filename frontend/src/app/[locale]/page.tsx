@@ -1,17 +1,16 @@
-import { useTranslations } from 'next-intl';
-import LanguageSwitcher from '@/components/LanguageSwitcher';
+﻿import { useTranslations } from 'next-intl';
+import HeaderBar from '@/components/HeaderBar';
+import UserGreeting from '@/components/UserGreeting';
 
 export default function HomePage() {
   const t = useTranslations('home');
   const popularTools = ['Notion', 'ChatGPT', 'Figma', 'Canva', 'Obsidian', 'Trello', 'Airtable', 'Miro'];
 
   return (
-    <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white">
+    <main className="min-h-screen bg-gradient-to-b from-gray-50 to-white pt-24">
       <div className="container mx-auto px-4 py-16">
-        {/* Language Switcher */}
-        <div className="flex justify-end mb-8">
-          <LanguageSwitcher />
-        </div>
+        {/* Top Bar */}
+        <HeaderBar />
 
         {/* Header */}
         <header className="text-center mb-16">
@@ -121,3 +120,5 @@ export default function HomePage() {
     </main>
   )
 }
+
+

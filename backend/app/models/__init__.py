@@ -1,5 +1,6 @@
 """
 Database Models
+统一导入所有数据库模型
 """
 from datetime import datetime
 from sqlalchemy import Column, String, Text, Integer, Float, TIMESTAMP, JSON, ARRAY, ForeignKey
@@ -9,6 +10,26 @@ import uuid
 
 from app.core.database import Base
 
+# 导入用户认证相关模型
+from app.models.user import (
+    User,
+    OAuthBinding,
+    Subscription,
+    QuotaUsage,
+    PhoneChangeLog,
+    # 枚举类型
+    MembershipLevel,
+    UserStatus,
+    OAuthProvider,
+    SubscriptionStatus,
+    BillingCycle,
+    QuotaType,
+)
+
+
+# ==========================================
+# 工具分析相关模型 (原有模型)
+# ==========================================
 
 class Tool(Base):
     """Tool model"""
@@ -74,3 +95,31 @@ class SearchResult(Base):
     query = Column(String, nullable=False, index=True)
     results = Column(JSON, nullable=False)
     created_at = Column(TIMESTAMP, default=datetime.utcnow)
+
+
+# ==========================================
+# 导出所有模型
+# ==========================================
+
+__all__ = [
+    # Base
+    "Base",
+    # 用户认证模型
+    "User",
+    "OAuthBinding",
+    "Subscription",
+    "QuotaUsage",
+    "PhoneChangeLog",
+    # 工具分析模型
+    "Tool",
+    "Audience",
+    "Script",
+    "SearchResult",
+    # 枚举类型
+    "MembershipLevel",
+    "UserStatus",
+    "OAuthProvider",
+    "SubscriptionStatus",
+    "BillingCycle",
+    "QuotaType",
+]

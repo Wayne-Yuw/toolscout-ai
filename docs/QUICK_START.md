@@ -60,7 +60,36 @@ docker-compose down
 
 ## Option 2: Manual Setup
 
-### Frontend Setup
+### 🪟 Windows 快速启动脚本（推荐）
+
+我们为 Windows 用户提供了便捷的批处理脚本：
+
+#### 启动所有服务
+```bash
+# 双击运行或在命令行执行
+docs\start-all.bat
+```
+这会自动打开两个窗口，分别启动后端和前端服务。
+
+#### 单独启动服务
+```bash
+# 只启动后端
+docs\start-backend.bat
+
+# 只启动前端
+docs\start-frontend.bat
+```
+
+#### 停止所有服务
+```bash
+docs\stop-all.bat
+```
+
+---
+
+### 手动启动（所有平台）
+
+#### Frontend Setup
 
 ```bash
 cd frontend
@@ -74,7 +103,7 @@ npm run dev
 
 Frontend will be available at: http://localhost:3000
 
-### Backend Setup
+#### Backend Setup
 
 ```bash
 cd backend
@@ -90,13 +119,14 @@ source venv/bin/activate
 
 # Install dependencies
 pip install -r requirements.txt
+pip install bcrypt pyjwt email-validator
 
 # Set up environment variables
 cp .env.example .env
 # Edit .env and configure your settings
 
 # Start development server
-uvicorn app.main:app --reload
+uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
 ```
 
 Backend will be available at: http://localhost:8000

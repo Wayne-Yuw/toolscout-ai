@@ -1,11 +1,11 @@
-'use client';
+﻿'use client';
 
 import { useLocale } from 'next-intl';
 import { usePathname, useRouter } from '@/i18n/routing';
 import { locales, localeNames, localeFlags, type Locale } from '@/i18n/config';
 import { useState } from 'react';
 
-export default function LanguageSwitcher() {
+export default function LanguageSwitcher({ compact = false }: { compact?: boolean }) {
   const locale = useLocale();
   const router = useRouter();
   const pathname = usePathname();
@@ -21,11 +21,11 @@ export default function LanguageSwitcher() {
     <div className="relative">
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="flex items-center gap-2 px-4 py-2 bg-white border border-gray-200 rounded-lg hover:border-blue-500 transition-colors"
+        className="flex items-center gap-2 px-3 py-2 h-10 bg-white border border-gray-200 rounded-lg hover:border-blue-500 transition-colors"
         aria-label="Change language"
       >
-        <span className="text-xl">{localeFlags[locale as Locale]}</span>
-        <span className="font-medium">{localeNames[locale as Locale]}</span>
+        <span className="text-base leading-none">{localeFlags[locale as Locale]}</span>
+        <span className="font-medium text-sm">{localeNames[locale as Locale]}</span>
         <svg
           className={`w-4 h-4 transition-transform ${isOpen ? 'rotate-180' : ''}`}
           fill="none"
@@ -59,8 +59,8 @@ export default function LanguageSwitcher() {
                   locale === loc ? 'bg-blue-50 text-blue-600' : 'text-gray-700'
                 }`}
               >
-                <span className="text-xl">{localeFlags[loc]}</span>
-                <span className="font-medium">{localeNames[loc]}</span>
+                <span className="text-base leading-none">{localeFlags[loc]}</span>
+                <span className="font-medium text-sm">{localeNames[loc]}</span>
                 {locale === loc && (
                   <svg
                     className="w-4 h-4 ml-auto"

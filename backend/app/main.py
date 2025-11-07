@@ -7,6 +7,9 @@ from fastapi.responses import JSONResponse
 
 from app.core.config import settings
 
+# 导入 API 路由
+from app.api.auth import router as auth_router
+
 # Create FastAPI application
 app = FastAPI(
     title=settings.APP_NAME,
@@ -60,7 +63,10 @@ async def internal_error_handler(request, exc):
     )
 
 
-# Import and include API routers
+# Include API routers
+app.include_router(auth_router, prefix=f"{settings.API_PREFIX}")
+
+# Import and include other API routers
 # (Will be added in future iterations)
 # from app.api.routes import search, analyze, scripts, export
 # app.include_router(search.router, prefix=f"{settings.API_PREFIX}/search", tags=["Search"])
