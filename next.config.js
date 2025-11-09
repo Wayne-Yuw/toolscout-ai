@@ -6,16 +6,18 @@ const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
 const nextConfig = {
   reactStrictMode: true,
 
-  // API configuration
+  // API configuration: only proxy if explicitly configured to external API
   async rewrites() {
-    return [
-      {
-        source: '/api/:path*',
-        destination: process.env.NEXT_PUBLIC_API_URL
-          ? `${process.env.NEXT_PUBLIC_API_URL}/:path*`
-          : 'http://localhost:8000/:path*',
-      },
-    ]
+    const target = process.env.NEXT_PUBLIC_API_URL
+    if (target && /^https?:\/\//i.test(target)) {
+      return [
+        {
+          source: '/api/:path*',
+          destination: `${target}/:path*`,
+        },
+      ]
+    }
+    return []
   },
 
   // Image optimization

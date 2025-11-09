@@ -9,6 +9,7 @@ from app.core.config import settings
 
 # 导入 API 路由
 from app.api.auth import router as auth_router
+from app.api.analyze import router as analyze_router
 
 # Create FastAPI application
 app = FastAPI(
@@ -65,6 +66,7 @@ async def internal_error_handler(request, exc):
 
 # Include API routers
 app.include_router(auth_router, prefix=f"{settings.API_PREFIX}")
+app.include_router(analyze_router, prefix=f"{settings.API_PREFIX}")
 
 # Import and include other API routers
 # (Will be added in future iterations)

@@ -2,8 +2,8 @@
  * API 配置和工具函数
  */
 
-// API 基础 URL
-export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api/v1';
+// API 基础 URL（Vercel 部署：使用 Next.js 内置 API 路由）
+export const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '/api';
 
 // Token 存储 key
 export const TOKEN_KEY = 'toolscout_token';

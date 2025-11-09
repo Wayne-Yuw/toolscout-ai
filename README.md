@@ -69,35 +69,32 @@ git clone <repository-url>
 cd toolscout-ai
 ```
 
-### 2. Frontend Setup
+### 2. Frontend Setup (Vercel-ready)
 
 ```bash
-cd frontend
+cd toolscout-ai
 npm install
 npm run dev
 ```
 
-Frontend will be available at: http://localhost:3000
+Frontend will be available at: http://localhost:3000. The app includes built-in Serverless API routes under `/api/*` and can be deployed to Vercel without a separate backend. See [Vercel Deploy](./docs/VERCEL_DEPLOY.md).
 
-### 3. Backend Setup
+### 3. Optional: Legacy Python Backend
 
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
-pip install -r requirements.txt
-uvicorn app.main:app --reload
-```
-
-Backend will be available at: http://localhost:8000
+The repository still contains a FastAPI backend for reference. It's optional and not required for Vercel deployment, since analysis now runs in Next.js API routes.
 
 ### 4. Environment Variables
 
 Copy `.env.example` to `.env` and fill in your API keys:
 
 **Frontend (.env.local):**
-```bash
-NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+# If you want to proxy API to an external backend, set NEXT_PUBLIC_API_URL to that base URL.
+# Otherwise, leave it unset to use Next.js Serverless API routes.
+
+# LLM keys (optional, either one enables real analysis)
+OPENAI_API_KEY=sk-...
+ANTHROPIC_API_KEY=...
 ```
 
 **Backend (.env):**
