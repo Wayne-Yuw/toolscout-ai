@@ -1,4 +1,4 @@
-﻿export default {
+export default {
   nav: {
     brand: 'ToolScout',
     admin: '管理员后台',
@@ -8,31 +8,78 @@
   home: {
     title: 'ToolScout AI',
     subtitle: '面向创作者的 AI 工具分析助手',
-    searchTitle: '🔎 搜索一个工具',
+    searchTitle: '搜索一个工具',
     searchDesc: '输入工具名称或官网地址开始分析',
     placeholder: '例如：Notion 或 https://www.notion.so',
     analyze: '开始分析',
-    tip: '提示：输入工具名我们会自动查找官网，也可直接粘贴完整 URL 分析',
-    popular: '🔥 热门工具',
+    tip: '提示：输入工具名称我们会自动查找官网，或直接粘贴完整 URL 分析',
+    popular: '热门工具',
     features: {
-      audience: {
-        title: '受众分析',
-        desc: '理解目标人群与产品共鸣点。'
-      },
-      script: {
-        title: '脚本生成',
-        desc: '生成产品脚本、摘要与内容大纲。'
-      },
-      discover: {
-        title: '工具发现',
-        desc: '对比替代方案，获取并排洞察。'
-      }
-    }
+      audience: { title: '受众分析', desc: '了解目标用户与核心价值。' },
+      script: { title: '脚本生成', desc: '生成产品脚本、摘要与大纲。' },
+      discover: { title: '工具发现', desc: '对比替代品并获取侧写见解。' },
+    },
   },
   auth: {
-    signInTitle: '用户登录',
-    signInDesc: '即将集成 Supabase Auth。',
-    noAccount: '还没有账号？',
-    goSignUp: '去注册',
+    signIn: {
+      heading: '用户登录',
+      welcome: '欢迎回来',
+      userTab: '用户登录',
+      adminTab: '管理员登录',
+      login: '登录',
+      otherLogins: '其他方式登录',
+      github: '使用 GitHub 登录',
+      google: '使用 Google 登录',
+      noAccount: '没有账号？',
+      goSignUp: '去注册',
+      adminNoRegister: '管理员不可注册',
+    },
+    signUp: {
+      heading: '用户注册',
+      phoneUniqueHint: '手机号作为唯一标识',
+      submit: '注册并登录',
+      haveAccount: '已有账号？',
+      goLogin: '去登录',
+    },
+    complete: {
+      heading: '完善资料',
+      tip: '首次使用第三方账号，需要绑定手机号',
+      bindAndEnter: '绑定并进入',
+      success: '绑定成功，正在跳转…',
+    },
+    form: {
+      usernamePhone: '用户名/手机号',
+      password: '密码',
+      username: '用户名',
+      phone: '手机号',
+      nicknameOptional: '昵称（可选）',
+      emailOptional: '邮箱（可选）',
+      avatarOptional: '头像（可选）',
+    },
+    upload: {
+      hint: '拖拽图片到此，或点击选择',
+      onlyImages: '仅支持图片文件',
+      tooLarge: '图片不能超过 ',
+    },
+    validation: {
+      invalidPhone: '手机号格式不正确',
+      invalidPassword: '密码需至少 6 位',
+      invalidEmail: '邮箱格式不正确',
+      invalidUrl: 'URL 格式不正确',
+      required: '请填写必填项',
+    },
+    errors: {
+      usernameTaken: '该用户名已被占用',
+      phoneTaken: '该手机号已被注册',
+      network: '网络异常，请稍后重试',
+      unknown: '提交失败，请稍后再试',
+    },
+    modal: {
+      registerFailed: '注册失败',
+    },
+    actions: {
+      ok: '确定',
+      submitting: '提交中…',
+    },
   },
 }

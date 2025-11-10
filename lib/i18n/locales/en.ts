@@ -1,4 +1,4 @@
-﻿export default {
+export default {
   nav: {
     brand: 'ToolScout',
     admin: 'Admin',
@@ -15,24 +15,71 @@
     tip: "Tip: Enter a tool name and we'll find the official website, or paste the full URL to analyze directly",
     popular: 'Popular Tools',
     features: {
-      audience: {
-        title: 'Audience Analysis',
-        desc: 'Understand who a tool is built for and why it resonates.'
-      },
-      script: {
-        title: 'Script Generation',
-        desc: 'Generate product briefs, summaries, and content outlines.'
-      },
-      discover: {
-        title: 'Tool Discovery',
-        desc: 'Find and compare alternatives with side-by-side insights.'
-      }
-    }
+      audience: { title: 'Audience Analysis', desc: 'Understand who a tool is built for and why it resonates.' },
+      script: { title: 'Script Generation', desc: 'Generate product briefs, summaries, and content outlines.' },
+      discover: { title: 'Tool Discovery', desc: 'Find and compare alternatives with side-by-side insights.' },
+    },
   },
   auth: {
-    signInTitle: 'Sign In',
-    signInDesc: 'Supabase Auth integration coming soon.',
-    noAccount: "Don't have an account?",
-    goSignUp: 'Sign up',
+    signIn: {
+      heading: 'Sign In',
+      welcome: 'Welcome back',
+      userTab: 'User Login',
+      adminTab: 'Admin Login',
+      login: 'Sign In',
+      otherLogins: 'Other Login Methods',
+      github: 'Continue with GitHub',
+      google: 'Continue with Google',
+      noAccount: "Don't have an account?",
+      goSignUp: 'Sign up',
+      adminNoRegister: 'Admins cannot register',
+    },
+    signUp: {
+      heading: 'Create Account',
+      phoneUniqueHint: 'Phone number is used as the unique identifier',
+      submit: 'Sign Up and Sign In',
+      haveAccount: 'Already have an account?',
+      goLogin: 'Sign in',
+    },
+    complete: {
+      heading: 'Complete Profile',
+      tip: 'First time with a social account. Please bind your phone number.',
+      bindAndEnter: 'Bind and Continue',
+      success: 'Binding success. Redirecting…',
+    },
+    form: {
+      usernamePhone: 'Username / Phone',
+      password: 'Password',
+      username: 'Username',
+      phone: 'Phone',
+      nicknameOptional: 'Nickname (optional)',
+      emailOptional: 'Email (optional)',
+      avatarOptional: 'Avatar (optional)',
+    },
+    upload: {
+      hint: 'Drag an image here, or click to choose',
+      onlyImages: 'Images only',
+      tooLarge: 'Image must be smaller than ',
+    },
+    validation: {
+      invalidPhone: 'Invalid phone number',
+      invalidPassword: 'Password must be at least 6 characters',
+      invalidEmail: 'Invalid email address',
+      invalidUrl: 'Invalid URL',
+      required: 'Please fill required fields',
+    },
+    errors: {
+      usernameTaken: 'Username already taken',
+      phoneTaken: 'Phone already registered',
+      network: 'Network error, please try again later',
+      unknown: 'Submission failed, please try again later',
+    },
+    modal: {
+      registerFailed: 'Registration Failed',
+    },
+    actions: {
+      ok: 'OK',
+      submitting: 'Submitting…',
+    },
   },
 }

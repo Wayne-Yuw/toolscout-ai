@@ -1,4 +1,4 @@
-﻿'use client'
+'use client'
 
 import { useEffect, useRef, useState } from 'react'
 import { useI18n, type Locale } from '@/lib/i18n'
@@ -26,7 +26,7 @@ export default function LanguageSwitcher() {
 
   const onSelect = (code: Locale) => {
     if (code === locale) {
-      setOpen(false) // 防呆：选择当前语言仅关闭
+      setOpen(false)
       return
     }
     setLocale(code)
@@ -64,3 +64,4 @@ export default function LanguageSwitcher() {
     </div>
   )
 }
+
