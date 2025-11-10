@@ -3,6 +3,7 @@ import { z } from 'zod'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth/options'
 import { createUser, findUserByPhone, findUserByUsername, linkOAuthToUser } from '@/lib/auth/db-users'
+import { logRequest, logResponse, logError } from '@/lib/logger'
 
 const BodySchema = z.object({
   username: z.string().trim().min(3).max(32),
@@ -19,6 +20,7 @@ export async function POST(req: NextRequest) {
 
   try {
     const json = await req.json()
+    logRequest('api/app/bind-phone', { path: req.nextUrl.pathname, method: req.method, body: json })
     const body = BodySchema.parse(json)
 
     const existsPhone = await findUserByPhone(body.phone)
@@ -36,8 +38,11 @@ export async function POST(req: NextRequest) {
       provider_account_id: oauth.providerAccountId,
     })
     // next-auth jwt will update on next reload; client can refetch session
-    return NextResponse.json({ ok: true, userId: created.id })
+    const resBody = { ok: true, userId: created.id }
+    logResponse('api/app/bind-phone', { path: req.nextUrl.pathname, status: 200, body: resBody })
+    return NextResponse.json(resBody)
   } catch (e: any) {
+    logError('api/app/bind-phone', { path: req.nextUrl.pathname, error: e })
     return NextResponse.json({ error: e?.message || '绑定失败' }, { status: 400 })
   }
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { createUser, findUserByPhone, findUserByUsername } from '@/lib/auth/db-users'
+import { logRequest, logResponse, logError } from '@/lib/logger'
 
 const BodySchema = z.object({
   username: z.string().trim().min(3).max(32),
@@ -23,6 +24,7 @@ const BodySchema = z.object({
 export async function POST(req: NextRequest) {
   try {
     const json = await req.json()
+    logRequest('api/auth/register', { path: req.nextUrl.pathname, method: req.method, body: json })
     const body = BodySchema.parse(json)
 
     const existsPhone = await findUserByPhone(body.phone)
@@ -38,8 +40,11 @@ export async function POST(req: NextRequest) {
       email: body.email,
       avatar_url: body.avatar_url,
     })
-    return NextResponse.json({ ok: true, user: { id: user.id, username: user.username, phone: user.phone } })
+    const resBody = { ok: true, user: { id: user.id, username: user.username, phone: user.phone } }
+    logResponse('api/auth/register', { path: req.nextUrl.pathname, status: 200, body: resBody })
+    return NextResponse.json(resBody)
   } catch (e: any) {
+    logError('api/auth/register', { path: req.nextUrl.pathname, error: e })
     if (e instanceof z.ZodError) {
       const issues = e.issues?.map((i) => ({
         path: i.path,

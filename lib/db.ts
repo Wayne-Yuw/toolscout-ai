@@ -1,6 +1,18 @@
-import { Pool } from 'pg'
+import { Pool, type PoolConfig } from 'pg'
 
 let pool: Pool | null = null
+
+function resolveSSL(connectionString: string): PoolConfig['ssl'] | undefined {
+  const sslEnv = String(process.env.DATABASE_SSL || process.env.PGSSLMODE || '')
+    .trim()
+    .toLowerCase()
+  if (['disable', 'off', 'false', '0', ''].includes(sslEnv)) return undefined
+  if (['no-verify', 'allow', 'prefer', 'require', 'on', 'true', '1'].includes(sslEnv)) {
+    return { rejectUnauthorized: false }
+  }
+  if (/\.supabase\.co(?::\d+)?\/?/i.test(connectionString)) return { rejectUnauthorized: false }
+  return undefined
+}
 
 export function getPool() {
   if (pool) return pool
@@ -9,7 +21,7 @@ export function getPool() {
     // Lazy pool that throws on use if not configured
     throw new Error('Missing DATABASE_URL env for Postgres connection')
   }
-  pool = new Pool({ connectionString: connStr })
+  pool = new Pool({ connectionString: connStr, ssl: resolveSSL(connStr) })
   return pool
 }
 
@@ -34,4 +46,3 @@ export async function withTransaction<T>(fn: (client: any) => Promise<T>): Promi
     client.release()
   }
 }
-
