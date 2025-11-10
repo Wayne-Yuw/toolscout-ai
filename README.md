@@ -1,36 +1,44 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# ToolScout 项目框架
 
-## Getting Started
+基于 Next.js 16（App Router）与 Supabase 的项目骨架。当前仅包含目录与页面结构，功能尚未实现。
 
-First, run the development server:
+## 结构概览
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+- pp/
+  - page.tsx：主页占位
+  - dmin/：管理员后台入口页（占位）
+  - uth/
+    - sign-in/：登录页（占位）
+    - sign-up/：注册页（占位）
+- lib/supabase/client.ts：Supabase 客户端初始化（仅前端公开密钥）
+- .env.local.example：环境变量示例
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 设计文档（参考）
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+请参考工作区根目录的三份设计文档：
+- ToolScoutAI设计文档
+- 管理员后台系统设计
+- 用户认证和会员系统设计
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+后续会基于上述文档逐步实现各模块功能。
 
-## Learn More
+## 本地开发
 
-To learn more about Next.js, take a look at the following resources:
+1. 复制环境变量并配置 Supabase：
+   `ash
+   cp .env.local.example .env.local
+   # 设置 NEXT_PUBLIC_SUPABASE_URL 与 NEXT_PUBLIC_SUPABASE_ANON_KEY
+   `
+2. 安装依赖并启动：
+   `ash
+   npm install
+   npm run dev
+   `
+3. 打开 http://localhost:3000 访问。
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## 下一步建议
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- 接入 Supabase Auth（邮箱/第三方登录）。
+- 定义角色与权限（管理员、会员等）。
+- 按设计文档拆分模块与布局（如后台侧边栏、仪表盘等）。
+- 配置数据库表结构、RLS 与 Seed 脚本。

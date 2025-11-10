@@ -1,0 +1,38 @@
+﻿export default {
+  nav: {
+    brand: 'ToolScout',
+    admin: '管理员后台',
+    login: '登录',
+    language: '语言',
+  },
+  home: {
+    title: 'ToolScout AI',
+    subtitle: '面向创作者的 AI 工具分析助手',
+    searchTitle: '🔎 搜索一个工具',
+    searchDesc: '输入工具名称或官网地址开始分析',
+    placeholder: '例如：Notion 或 https://www.notion.so',
+    analyze: '开始分析',
+    tip: '提示：输入工具名我们会自动查找官网，也可直接粘贴完整 URL 分析',
+    popular: '🔥 热门工具',
+    features: {
+      audience: {
+        title: '受众分析',
+        desc: '理解目标人群与产品共鸣点。'
+      },
+      script: {
+        title: '脚本生成',
+        desc: '生成产品脚本、摘要与内容大纲。'
+      },
+      discover: {
+        title: '工具发现',
+        desc: '对比替代方案，获取并排洞察。'
+      }
+    }
+  },
+  auth: {
+    signInTitle: '用户登录',
+    signInDesc: '即将集成 Supabase Auth。',
+    noAccount: '还没有账号？',
+    goSignUp: '去注册',
+  },
+}
