@@ -1,4 +1,5 @@
 import { Pool, type PoolConfig } from 'pg'
+import { nowISO } from '@/lib/logger'
 
 let pool: Pool | null = null
 
@@ -21,7 +22,13 @@ export function getPool() {
     // Lazy pool that throws on use if not configured
     throw new Error('Missing DATABASE_URL env for Postgres connection')
   }
-  pool = new Pool({ connectionString: connStr, ssl: resolveSSL(connStr) })
+  const ssl = resolveSSL(connStr)
+  try {
+    const u = new URL(connStr)
+    const masked = `${u.protocol}//${u.username || 'user'}:***@${u.hostname}:${u.port || '5432'}${u.pathname}`
+    console.log(`[${nowISO()}] db:init`, { connectionString: masked, ssl: ssl ? { rejectUnauthorized: (ssl as any).rejectUnauthorized === false ? false : true } : null })
+  } catch {}
+  pool = new Pool({ connectionString: connStr, ssl })
   return pool
 }
 
