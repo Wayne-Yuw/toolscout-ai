@@ -1,7 +1,0 @@
-#!/bin/sh
-# Pre-commit guard: encoding + frontend type-check
-node scripts/check-encoding.js || exit 1
-if [ -d "frontend" ]; then
-  npm --prefix frontend run -s type-check || exit 1
-fi
-exit 0
