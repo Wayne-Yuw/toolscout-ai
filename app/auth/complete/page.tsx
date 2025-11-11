@@ -2,11 +2,13 @@
 
 import { useMemo, useState } from 'react'
 import { useTranslations } from '@/lib/i18n'
+import AlertModal from '@/components/ui/alert-modal'
 
 export default function CompleteProfilePage() {
   const t = useTranslations()
   const [form, setForm] = useState({ username: '', phone: '', nickname: '' })
   const [message, setMessage] = useState<string | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
   const [ok, setOk] = useState(false)
   const [phoneTouched, setPhoneTouched] = useState(false)
   const [nameTouched, setNameTouched] = useState(false)
@@ -28,9 +30,18 @@ export default function CompleteProfilePage() {
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
     setMessage(null)
-    const res = await fetch('/api/app/bind-phone', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(form) })
+    const res = await fetch('/api/app/bind-phone', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      credentials: 'include',
+      body: JSON.stringify(form),
+    })
     const data = await res.json()
-    if (!res.ok) setMessage(data.error || t('auth.modal.registerFailed'))
+    if (!res.ok) {
+      const msg = data.error || t('auth.modal.registerFailed')
+      setMessage(msg)
+      setModalOpen(true)
+    }
     else {
       setOk(true)
       setTimeout(() => (window.location.href = '/'), 800)
@@ -84,6 +95,7 @@ export default function CompleteProfilePage() {
           {ok && <p className='pt-2 text-center text-sm text-green-600'>{t('auth.complete.success')}</p>}
         </form>
       </div>
+      <AlertModal open={modalOpen} title={t('auth.modal.registerFailed')} okText={t('auth.actions.ok')} message={message || ''} onClose={() => setModalOpen(false)} />
     </main>
   )
 }

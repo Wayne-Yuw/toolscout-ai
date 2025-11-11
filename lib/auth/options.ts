@@ -5,6 +5,22 @@ import Credentials from 'next-auth/providers/credentials'
 import { findUserByIdentifier, verifyPassword, findUserByOAuth } from '@/lib/auth/db-users'
 
 export const authOptions: NextAuthOptions = {
+  // 自定义登录页与错误页都指向 /auth/sign-in
+  pages: { signIn: '/auth/sign-in', error: '/auth/sign-in' },
+  // 开发环境开启调试输出
+  debug: process.env.NODE_ENV !== 'production',
+  // 确保会话 Cookie 在整个站点路径可用（不仅是 /api/auth）
+  cookies: {
+    sessionToken: {
+      name: process.env.NODE_ENV === 'production' ? '__Secure-next-auth.session-token' : 'next-auth.session-token',
+      options: {
+        httpOnly: true,
+        sameSite: 'lax',
+        path: '/',
+        secure: process.env.NODE_ENV === 'production',
+      },
+    },
+  },
   session: { strategy: 'jwt' },
   providers: [
     Github({
@@ -37,6 +53,17 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
+  logger: {
+    error(code, metadata) {
+      console.error('[next-auth:error]', code, metadata)
+    },
+    warn(code) {
+      console.warn('[next-auth:warn]', code)
+    },
+    debug(code, metadata) {
+      if (process.env.NODE_ENV !== 'production') console.log('[next-auth:debug]', code, metadata)
+    },
+  },
   callbacks: {
     async jwt({ token, user, account, profile }) {
       if (user && (user as any).appUserId) {
@@ -78,4 +105,3 @@ export const authOptions: NextAuthOptions = {
     },
   },
 }
-

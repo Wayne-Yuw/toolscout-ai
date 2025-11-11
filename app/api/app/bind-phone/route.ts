@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth/options'
-import { createUser, findUserByPhone, findUserByUsername, linkOAuthToUser } from '@/lib/auth/db-users'
+import { createUser, findUserByPhone, findUserByUsername } from '@/lib/auth/db-users'
 import { logRequest, logResponse, logError } from '@/lib/logger'
 
 const BodySchema = z.object({
@@ -23,6 +23,7 @@ const BodySchema = z.object({
 })
 
 export async function POST(req: NextRequest) {
+  // 需要确保用户已通过 OAuth 完成首次登录（但未绑定手机号）
   const session = await getServerSession(authOptions)
   if (!session) return NextResponse.json({ error: '未登录' }, { status: 401 })
   const needs = (session as any).needsBinding
@@ -44,11 +45,10 @@ export async function POST(req: NextRequest) {
       phone: body.phone,
       password: undefined,
       nickname: body.nickname,
-      email: oauth.email || undefined,
-      provider: oauth.provider,
-      provider_account_id: oauth.providerAccountId,
+      email: oauth?.email || undefined,
+      provider: oauth!.provider,
+      provider_account_id: oauth!.providerAccountId,
     })
-    // next-auth jwt will update on next reload; client can refetch session
     const resBody = { ok: true, userId: created.id }
     logResponse('api/app/bind-phone', { path: req.nextUrl.pathname, status: 200, body: resBody })
     return NextResponse.json(resBody)
@@ -57,3 +57,4 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: e?.message || '绑定失败' }, { status: 400 })
   }
 }
+

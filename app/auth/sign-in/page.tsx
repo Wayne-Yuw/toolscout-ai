@@ -48,7 +48,7 @@ export default function SignInPage() {
   const oauthBtn = (provider: 'github' | 'google', label: string) => (
     <button
       type='button'
-      onClick={() => signIn(provider)}
+      onClick={() => signIn(provider, { callbackUrl: '/' })}
       className='flex w-full items-center justify-center gap-2 rounded-md border border-zinc-200 px-3 py-2 text-sm hover:bg-zinc-50'
     >
       <Icon kind={provider} />
