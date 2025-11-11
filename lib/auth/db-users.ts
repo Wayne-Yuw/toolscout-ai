@@ -45,7 +45,7 @@ export async function createUser(input: {
   provider_account_id?: string | null
 }): Promise<AppUser> {
   const password_hash = input.password ? await bcrypt.hash(input.password, 10) : null
-  const nickname = input.nickname || `用户${maskPhone(input.phone)}`
+  const nickname = input.nickname || `用户${last4(input.phone)}`
   const avatar_url = input.avatar_url || defaultAvatarUrl(input.username)
   const is_admin = !!input.is_admin
 
@@ -81,12 +81,12 @@ export async function verifyPassword(user: AppUser, password: string): Promise<b
   return bcrypt.compare(password, user.password_hash)
 }
 
-function maskPhone(phone: string) {
-  return phone.replace(/(\d{3})\d{4}(\d{4})/, '$1****$2')
+function last4(phone: string) {
+  const digits = (phone || '').replace(/\D/g, '')
+  return digits.slice(-4)
 }
 
 function defaultAvatarUrl(seed: string) {
   const safe = encodeURIComponent(seed)
   return `https://api.dicebear.com/9.x/identicon/svg?seed=${safe}`
 }
-

@@ -4,8 +4,17 @@ import { createUser, findUserByPhone, findUserByUsername } from '@/lib/auth/db-u
 import { logRequest, logResponse, logError } from '@/lib/logger'
 
 const BodySchema = z.object({
-  username: z.string().trim().min(3).max(32),
-  phone: z.string().trim().min(6).max(20),
+  username: z
+    .string()
+    .trim()
+    .min(3)
+    .max(32)
+    .regex(/^[A-Za-z0-9_]+$/, '用户名仅支持字母、数字、下划线'),
+  // Mainland China mobile number: 11 digits starting with 1 and second digit 3-9
+  phone: z
+    .string()
+    .trim()
+    .regex(/^1[3-9]\d{9}$/u, '手机号格式不正确'),
   password: z.string().min(6).max(128),
   nickname: z
     .union([z.string().trim().max(32), z.literal('')])

@@ -15,9 +15,9 @@ export default {
     tip: '提示：输入工具名称我们会自动查找官网，或直接粘贴完整 URL 分析',
     popular: '热门工具',
     features: {
-      audience: { title: '受众分析', desc: '了解目标用户与核心价值。' },
-      script: { title: '脚本生成', desc: '生成产品脚本、摘要与大纲。' },
-      discover: { title: '工具发现', desc: '对比替代品并获取侧写见解。' },
+      audience: { title: '受众分析', desc: '了解目标用户与核心价值点' },
+      script: { title: '脚本生成', desc: '生成产品脚本、摘要与大纲' },
+      discover: { title: '工具发现', desc: '对比替代品并获取侧写见解' },
     },
   },
   auth: {
@@ -48,7 +48,7 @@ export default {
       success: '绑定成功，正在跳转…',
     },
     form: {
-      usernamePhone: '用户名/手机号',
+      usernamePhone: '用户名 / 手机号',
       password: '密码',
       username: '用户名',
       phone: '手机号',
@@ -63,7 +63,8 @@ export default {
     },
     validation: {
       invalidPhone: '手机号格式不正确',
-      invalidPassword: '密码需至少 6 位',
+      invalidUsername: '用户名仅支持字母、数字、下划线',
+      invalidPassword: '密码需至少 6 个字符',
       invalidEmail: '邮箱格式不正确',
       invalidUrl: 'URL 格式不正确',
       required: '请填写必填项',

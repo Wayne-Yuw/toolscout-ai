@@ -14,6 +14,7 @@ function useErrorMessage() {
       USERNAME_TAKEN: t('auth.errors.usernameTaken'),
       PHONE_TAKEN: t('auth.errors.phoneTaken'),
       INVALID_PHONE: t('auth.validation.invalidPhone'),
+      INVALID_USERNAME: t('auth.validation.invalidUsername'),
       INVALID_PASSWORD: t('auth.validation.invalidPassword'),
       REQUIRED_FIELD: t('auth.validation.required'),
       NETWORK_ERROR: t('auth.errors.network'),
@@ -29,6 +30,10 @@ export default function SignUpPage() {
   const [form, setForm] = useState({ username: '', phone: '', password: '', nickname: '', email: '', avatar_url: '' })
   const [pwdTouched, setPwdTouched] = useState(false)
   const [pwdError, setPwdError] = useState<string | null>(null)
+  const [phoneTouched, setPhoneTouched] = useState(false)
+  const [phoneError, setPhoneError] = useState<string | null>(null)
+  const [nameTouched, setNameTouched] = useState(false)
+  const [nameError, setNameError] = useState<string | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
   const [modalMsg, setModalMsg] = useState('')
   const [loading, setLoading] = useState(false)
@@ -40,6 +45,18 @@ export default function SignUpPage() {
     return !/^.{6,}$/.test(form.password)
   }, [pwdTouched, form.password])
 
+  // China mainland phone: 11 digits, starts with 1[3-9]
+  const phoneInvalid = useMemo(() => {
+    if (!phoneTouched) return false
+    return !/^1[3-9]\d{9}$/.test(form.phone.trim())
+  }, [phoneTouched, form.phone])
+
+  // Username: only letters, numbers, underscore; 3-32 chars
+  const nameInvalid = useMemo(() => {
+    if (!nameTouched) return false
+    return !/^[A-Za-z0-9_]{3,32}$/.test(form.username.trim())
+  }, [nameTouched, form.username])
+
   const openModal = (msg: string) => {
     setModalMsg(msg)
     setModalOpen(true)
@@ -47,8 +64,9 @@ export default function SignUpPage() {
 
   function validateAll(): string | null {
     if (!form.username || !form.phone || !form.password) return errMsg('REQUIRED_FIELD')
+    if (!/^[A-Za-z0-9_]{3,32}$/.test(form.username.trim())) return errMsg('INVALID_USERNAME')
+    if (!/^1[3-9]\d{9}$/.test(form.phone.trim())) return errMsg('INVALID_PHONE')
     if (!/^.{6,}$/.test(form.password)) return errMsg('INVALID_PASSWORD')
-    if (!/^\+?\d[\d\-\s]{5,}$/.test(form.phone)) return errMsg('INVALID_PHONE')
     return null
   }
 
@@ -99,11 +117,33 @@ export default function SignUpPage() {
         <form onSubmit={submit} className='mt-4 space-y-3'>
           <div>
             <label className='mb-1 block text-sm'>{t('auth.form.username')}</label>
-            <input className='w-full rounded-lg border border-zinc-200 px-3 py-2' value={form.username} onChange={(e) => update('username', e.target.value)} required />
+            <input
+              className='w-full rounded-lg border border-zinc-200 px-3 py-2'
+              value={form.username}
+              onChange={(e) => update('username', e.target.value)}
+              onBlur={() => {
+                setNameTouched(true)
+                const invalid = !/^[A-Za-z0-9_]{3,32}$/.test(form.username.trim())
+                setNameError(invalid ? errMsg('INVALID_USERNAME') : null)
+              }}
+              required
+            />
+            {nameError && <p className='mt-1 text-xs text-red-600'>{nameError}</p>}
           </div>
           <div>
             <label className='mb-1 block text-sm'>{t('auth.form.phone')}</label>
-            <input className='w-full rounded-lg border border-zinc-200 px-3 py-2' value={form.phone} onChange={(e) => update('phone', e.target.value)} required />
+            <input
+              className='w-full rounded-lg border border-zinc-200 px-3 py-2'
+              value={form.phone}
+              onChange={(e) => update('phone', e.target.value)}
+              onBlur={() => {
+                setPhoneTouched(true)
+                const invalid = !/^1[3-9]\d{9}$/.test(form.phone.trim())
+                setPhoneError(invalid ? errMsg('INVALID_PHONE') : null)
+              }}
+              required
+            />
+            {phoneError && <p className='mt-1 text-xs text-red-600'>{phoneError}</p>}
           </div>
           <div>
             <label className='mb-1 block text-sm'>{t('auth.form.password')}</label>
@@ -136,7 +176,7 @@ export default function SignUpPage() {
             <label className='mb-1 block text-sm'>{t('auth.form.avatarOptional')}</label>
             <AvatarUpload value={form.avatar_url || null} onChange={(v) => update('avatar_url', v || '')} />
           </div>
-          <button type='submit' disabled={loading || passwordInvalid} className='mt-2 w-full rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 py-2 text-white disabled:cursor-not-allowed disabled:opacity-60'>
+          <button type='submit' disabled={loading || passwordInvalid || phoneInvalid || nameInvalid} className='mt-2 w-full rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 py-2 text-white disabled:cursor-not-allowed disabled:opacity-60'>
             {loading ? t('auth.actions.submitting') : t('auth.signUp.submit')}
           </button>
           <p className='text-center text-sm text-zinc-600'>{t('auth.signUp.haveAccount')}<Link href='/auth/sign-in' className='text-blue-600'>{t('auth.signUp.goLogin')}</Link></p>

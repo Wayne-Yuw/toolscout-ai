@@ -6,9 +6,20 @@ import { createUser, findUserByPhone, findUserByUsername, linkOAuthToUser } from
 import { logRequest, logResponse, logError } from '@/lib/logger'
 
 const BodySchema = z.object({
-  username: z.string().trim().min(3).max(32),
-  phone: z.string().trim().min(6).max(20),
-  nickname: z.union([z.string().trim().max(32), z.literal('')]).optional().transform((v) => (v ? v : undefined)),
+  username: z
+    .string()
+    .trim()
+    .min(3)
+    .max(32)
+    .regex(/^[A-Za-z0-9_]+$/, '用户名仅支持字母、数字、下划线'),
+  phone: z
+    .string()
+    .trim()
+    .regex(/^1[3-9]\d{9}$/u, '手机号格式不正确'),
+  nickname: z
+    .union([z.string().trim().max(32), z.literal('')])
+    .optional()
+    .transform((v) => (v ? v : undefined)),
 })
 
 export async function POST(req: NextRequest) {

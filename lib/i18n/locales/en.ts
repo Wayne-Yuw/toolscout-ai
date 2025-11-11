@@ -63,6 +63,7 @@ export default {
     },
     validation: {
       invalidPhone: 'Invalid phone number',
+      invalidUsername: 'Only letters, numbers and underscore are allowed',
       invalidPassword: 'Password must be at least 6 characters',
       invalidEmail: 'Invalid email address',
       invalidUrl: 'Invalid URL',
