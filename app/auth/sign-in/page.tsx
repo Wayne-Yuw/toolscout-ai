@@ -2,7 +2,7 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useEffect, useState } from 'react'
+import { Suspense, useEffect, useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useTranslations } from '@/lib/i18n'
 import AlertModal from '@/components/ui/alert-modal'
@@ -10,7 +10,7 @@ import { useRouter, useSearchParams } from 'next/navigation'
 
 type Tab = 'user' | 'admin'
 
-export default function SignInPage() {
+function SignInPageInner() {
   const [loading, setLoading] = useState(false)
   const [oauthLoading, setOauthLoading] = useState<null | 'github' | 'google'>(null)
   const busy = loading || !!oauthLoading
@@ -177,3 +177,11 @@ export default function SignInPage() {
 }
 
 
+
+export default function SignInPage() {
+  return (
+    <Suspense fallback={null}>
+      <SignInPageInner />
+    </Suspense>
+  )
+}
