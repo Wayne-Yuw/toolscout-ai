@@ -1,4 +1,4 @@
-'use client'
+﻿'use client'
 
 import Image from 'next/image'
 import Link from 'next/link'
@@ -11,6 +11,11 @@ import { useRouter, useSearchParams } from 'next/navigation'
 type Tab = 'user' | 'admin'
 
 export default function SignInPage() {
+  const [loading, setLoading] = useState(false)
+  const [oauthLoading, setOauthLoading] = useState<null | 'github' | 'google'>(null)
+  const busy = loading || !!oauthLoading
+  const enableGithub = (process.env.NEXT_PUBLIC_ENABLE_OAUTH_GITHUB || 'true') !== 'false'
+  const enableGoogle = (process.env.NEXT_PUBLIC_ENABLE_OAUTH_GOOGLE || 'true') !== 'false'
   const t = useTranslations()
   const router = useRouter()
   const search = useSearchParams()
@@ -24,14 +29,19 @@ export default function SignInPage() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setMessage(null)
-    const res = await signIn('credentials', {
-      idOrPhone,
-      password,
-      loginType: tab,
-      redirect: false,
-    })
-    if (res?.error) setMessage(res.error || '登录失败')
-    else window.location.href = '/'
+    setLoading(true)
+    try {
+      const res = await signIn('credentials', {
+        idOrPhone,
+        password,
+        loginType: tab,
+        redirect: false,
+      })
+      if (res?.error) setMessage(res.error || '登录失败')
+      else window.location.href = '/'
+    } finally {
+      setLoading(false)
+    }
   }
 
   const Icon = ({ kind }: { kind: 'github' | 'google' }) => {
@@ -54,23 +64,23 @@ export default function SignInPage() {
   const oauthBtn = (provider: 'github' | 'google', label: string) => (
     <button
       type='button'
-      onClick={() => {
-        try { sessionStorage.setItem('oauthLastProvider', provider) } catch {}
-        signIn(provider, { callbackUrl: '/' })
-      }}
-      className='flex w-full items-center justify-center gap-2 rounded-md border border-zinc-200 px-3 py-2 text-sm hover:bg-zinc-50'
+      disabled={busy}
+      onClick={() => { try { sessionStorage.setItem('oauthLastProvider', provider) } catch {} setOauthLoading(provider); signIn(provider, { callbackUrl: '/' }) }}
+
+
+      className='flex w-full items-center justify-center gap-2 rounded-md border border-zinc-200 px-3 py-2 text-sm hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-60'
     >
       <Icon kind={provider} />
-      <span>{label}</span>
+      <span>{oauthLoading === provider ? t('auth.actions.submitting') : label}</span>
     </button>
   )
 
-  // 检测来自 next-auth 的 OAuth 错误并弹窗提示（常见为回调阶段网络超时）
+  // 妫€娴嬫潵鑷?next-auth 鐨?OAuth 閿欒骞跺脊绐楁彁绀猴紙甯歌涓哄洖璋冮樁娈电綉缁滆秴鏃讹級
   useEffect(() => {
     const err = search?.get('error')
     if (!err) return
     if (err === 'OAuthCallback' || err === 'OAuthSignin') {
-      let hint = t('auth.errors.oauthTimeout') || '第三方授权超时或网络异常，请重试。'
+      let hint = t('auth.errors.oauthTimeout') || '第三方授权超时或网络异常，请重试'
       try {
         const p = (sessionStorage.getItem('oauthLastProvider') || '') as 'github' | 'google'
         if (p === 'github') hint = t('auth.errors.oauthTimeoutGithub') || hint
@@ -83,8 +93,7 @@ export default function SignInPage() {
 
   const closeModal = () => {
     setModalOpen(false)
-    // 清理 URL 上的 error 与 callbackUrl，避免重复弹出
-    router.replace('/auth/sign-in')
+    // 娓呯悊 URL 涓婄殑 error 涓?callbackUrl锛岄伩鍏嶉噸澶嶅脊鍑?    router.replace('/auth/sign-in')
   }
 
   return (
@@ -98,13 +107,13 @@ export default function SignInPage() {
           <p className='mt-1 text-sm text-zinc-500'>{t('auth.signIn.welcome')}</p>
 
           <div className='mt-4 flex rounded-lg bg-zinc-100 p-1 text-sm font-medium'>
-            <button
+            <button disabled={busy}
               onClick={() => setTab('user')}
               className={`flex-1 rounded-md px-3 py-2 ${tab === 'user' ? 'bg-white text-blue-600 shadow' : 'text-zinc-600'}`}
             >
               {t('auth.signIn.userTab')}
             </button>
-            <button
+            <button disabled={busy}
               onClick={() => setTab('admin')}
               className={`flex-1 rounded-md px-3 py-2 ${tab === 'admin' ? 'bg-white text-blue-600 shadow' : 'text-zinc-600'}`}
             >
@@ -115,7 +124,7 @@ export default function SignInPage() {
           <form onSubmit={onSubmit} className='mt-4 space-y-3'>
             <div>
               <label className='mb-1 block text-sm text-zinc-700'>{t('auth.form.usernamePhone')}</label>
-              <input
+              <input disabled={busy}
                 value={idOrPhone}
                 onChange={(e) => setIdOrPhone(e.target.value)}
                 placeholder={t('auth.form.usernamePhone')}
@@ -125,7 +134,7 @@ export default function SignInPage() {
             </div>
             <div>
               <label className='mb-1 block text-sm text-zinc-700'>{t('auth.form.password')}</label>
-              <input
+              <input disabled={busy}
                 type='password'
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
@@ -135,8 +144,8 @@ export default function SignInPage() {
               />
             </div>
             {message && <p className='text-sm text-red-600'>{message}</p>}
-            <button type='submit' className='mt-2 w-full rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 py-2 text-white'>
-              {t('auth.signIn.login')}
+            <button type='submit' disabled={busy} className='mt-2 w-full rounded-lg bg-gradient-to-r from-blue-500 to-purple-500 py-2 text-white'>
+              {loading ? t('auth.actions.submitting') : t('auth.signIn.login')}
             </button>
           </form>
 
@@ -146,8 +155,8 @@ export default function SignInPage() {
                 <div className='h-px flex-1 bg-zinc-200' /> {t('auth.signIn.otherLogins')} <div className='h-px flex-1 bg-zinc-200' />
               </div>
               <div className='grid grid-cols-2 gap-3'>
-                {oauthBtn('github', t('auth.signIn.github'))}
-                {oauthBtn('google', t('auth.signIn.google'))}
+                {enableGithub && oauthBtn('github', t('auth.signIn.github'))}
+                {enableGoogle && oauthBtn('google', t('auth.signIn.google'))}
               </div>
             </div>
           )}
@@ -162,7 +171,9 @@ export default function SignInPage() {
           </p>
         </div>
       </div>
-      <AlertModal open={modalOpen} title={t('auth.modal.oauthError') || '授权登录失败'} okText={t('auth.actions.ok')} message={modalMsg} onClose={closeModal} />
+      <AlertModal open={modalOpen} title={t('auth.modal.oauthError') || '鎺堟潈鐧诲綍澶辫触'} okText={t('auth.actions.ok')} message={modalMsg} onClose={closeModal} />
     </main>
   )
 }
+
+

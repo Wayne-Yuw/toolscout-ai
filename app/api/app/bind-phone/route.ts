@@ -1,40 +1,41 @@
-import { NextRequest, NextResponse } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getServerSession } from 'next-auth'
 import { getToken } from 'next-auth/jwt'
 import { authOptions } from '@/lib/auth/options'
-import { createUser, findUserByPhone, findUserByUsername } from '@/lib/auth/db-users'
-import { logRequest, logResponse, logError } from '@/lib/logger'
+import { createUser, findUserByPhone, findUserByUsername, linkOAuthToUser } from '@/lib/auth/db-users'
+import { logRequest, logResponse, logError, nowISO } from '@/lib/logger'
+
+export const runtime = 'nodejs'
 
 const BodySchema = z.object({
-  username: z
-    .string()
-    .trim()
-    .min(3)
-    .max(32)
-    .regex(/^[A-Za-z0-9_]+$/, '用户名仅支持字母、数字、下划线'),
-  phone: z
-    .string()
-    .trim()
-    .regex(/^1[3-9]\d{9}$/u, '手机号格式不正确'),
-  nickname: z
-    .union([z.string().trim().max(32), z.literal('')])
-    .optional()
-    .transform((v) => (v ? v : undefined)),
+  username: z.string().trim().min(3).max(32).regex(/^[A-Za-z0-9_]+$/, '用户名仅支持字母、数字、下划线'),
+  phone: z.string().trim().regex(/^1[3-9]\d{9}$/u, '手机号格式不正确'),
+  nickname: z.union([z.string().trim().max(32), z.literal('')]).optional().transform((v) => (v ? v : undefined)),
+  avatar_url: z.union([z.string().trim().url(), z.string().trim().regex(/^data:/)]).optional(),
+  merge: z.boolean().optional(),
 })
 
 export async function POST(req: NextRequest) {
-  // 需要确保用户已通过 OAuth 完成首次登录（但未绑定手机号）
   let session = await getServerSession(authOptions)
+  try {
+    const names = req.cookies.getAll().map((c) => c.name)
+    console.log(`[${nowISO()}] bind-phone:cookies`, names)
+  } catch {}
   let needs = (session as any)?.needsBinding as boolean | undefined
   let oauth = (session as any)?.oauth as { provider: string; providerAccountId: string; email?: string | null } | null
 
-  // 某些环境下 getServerSession 读取不到 Cookie，这里降级用 JWT 直接解析
+  // Fallback: read JWT directly if session missing
   if (!session || !oauth) {
-    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
+    const token =
+      (await getToken({ req, secret: process.env.NEXTAUTH_SECRET, cookieName: '__Secure-next-auth.session-token' })) ||
+      (await getToken({ req, secret: process.env.NEXTAUTH_SECRET, cookieName: 'next-auth.session-token' }))
     if (token) {
       needs = (token as any).needsBinding as boolean
       oauth = ((token as any).oauth || null) as any
+      try { console.log(`[${nowISO()}] bind-phone:fallback-token`, { hasToken: true, hasOAuth: !!oauth, needs }) } catch {}
+    } else {
+      try { console.log(`[${nowISO()}] bind-phone:fallback-token`, { hasToken: false }) } catch {}
     }
   }
 
@@ -47,9 +48,18 @@ export async function POST(req: NextRequest) {
     const body = BodySchema.parse(json)
 
     const existsPhone = await findUserByPhone(body.phone)
-    if (existsPhone) return NextResponse.json({ error: '手机号已存在' }, { status: 409 })
-    const existsName = await findUserByUsername(body.username)
-    if (existsName) return NextResponse.json({ error: '用户名已存在' }, { status: 409 })
+    if (existsPhone) {
+      if (existsPhone.provider) {
+        return NextResponse.json({ error: 'PHONE_TAKEN_OAUTH_BOUND', message: '该手机号已被绑定到授权账号' }, { status: 409 })
+      }
+      if (!body.merge) {
+        return NextResponse.json({ error: 'PHONE_TAKEN_CAN_MERGE', message: '手机号已存在，是否合并到该账号', canMerge: true }, { status: 409 })
+      }
+      await linkOAuthToUser(existsPhone.id, oauth!.provider, oauth!.providerAccountId)
+      const resBody = { ok: true, userId: existsPhone.id, merged: true }
+      logResponse('api/app/bind-phone', { path: req.nextUrl.pathname, status: 200, body: resBody })
+      return NextResponse.json(resBody)
+    }
 
     const created = await createUser({
       username: body.username,
@@ -57,6 +67,7 @@ export async function POST(req: NextRequest) {
       password: undefined,
       nickname: body.nickname,
       email: oauth?.email || undefined,
+      avatar_url: body.avatar_url || ((session as any)?.oauthAvatar as string | null) || undefined,
       provider: oauth!.provider,
       provider_account_id: oauth!.providerAccountId,
     })
