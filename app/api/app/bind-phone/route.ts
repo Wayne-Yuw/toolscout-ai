@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { z } from 'zod'
 import { getServerSession } from 'next-auth'
+import { getToken } from 'next-auth/jwt'
 import { authOptions } from '@/lib/auth/options'
 import { createUser, findUserByPhone, findUserByUsername } from '@/lib/auth/db-users'
 import { logRequest, logResponse, logError } from '@/lib/logger'
@@ -24,11 +25,21 @@ const BodySchema = z.object({
 
 export async function POST(req: NextRequest) {
   // 需要确保用户已通过 OAuth 完成首次登录（但未绑定手机号）
-  const session = await getServerSession(authOptions)
-  if (!session) return NextResponse.json({ error: '未登录' }, { status: 401 })
-  const needs = (session as any).needsBinding
-  const oauth = (session as any).oauth as { provider: string; providerAccountId: string; email?: string | null } | null
-  if (!needs || !oauth) return NextResponse.json({ error: '无需绑定' }, { status: 400 })
+  let session = await getServerSession(authOptions)
+  let needs = (session as any)?.needsBinding as boolean | undefined
+  let oauth = (session as any)?.oauth as { provider: string; providerAccountId: string; email?: string | null } | null
+
+  // 某些环境下 getServerSession 读取不到 Cookie，这里降级用 JWT 直接解析
+  if (!session || !oauth) {
+    const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET })
+    if (token) {
+      needs = (token as any).needsBinding as boolean
+      oauth = ((token as any).oauth || null) as any
+    }
+  }
+
+  if (!oauth) return NextResponse.json({ error: '未登录' }, { status: 401 })
+  if (!needs) return NextResponse.json({ error: '无需绑定' }, { status: 400 })
 
   try {
     const json = await req.json()
@@ -57,4 +68,3 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ error: e?.message || '绑定失败' }, { status: 400 })
   }
 }
-
