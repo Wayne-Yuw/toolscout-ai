@@ -2,18 +2,24 @@
 
 import Image from 'next/image'
 import Link from 'next/link'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { signIn } from 'next-auth/react'
 import { useTranslations } from '@/lib/i18n'
+import AlertModal from '@/components/ui/alert-modal'
+import { useRouter, useSearchParams } from 'next/navigation'
 
 type Tab = 'user' | 'admin'
 
 export default function SignInPage() {
   const t = useTranslations()
+  const router = useRouter()
+  const search = useSearchParams()
   const [tab, setTab] = useState<Tab>('user')
   const [idOrPhone, setIdOrPhone] = useState('')
   const [password, setPassword] = useState('')
   const [message, setMessage] = useState<string | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
+  const [modalMsg, setModalMsg] = useState('')
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -55,6 +61,23 @@ export default function SignInPage() {
       <span>{label}</span>
     </button>
   )
+
+  // 检测来自 next-auth 的 OAuth 错误并弹窗提示（常见为回调阶段网络超时）
+  useEffect(() => {
+    const err = search?.get('error')
+    if (!err) return
+    if (err === 'OAuthCallback' || err === 'OAuthSignin') {
+      const hint = t('auth.errors.oauthTimeout') || '第三方授权超时或网络异常，请重试。'
+      setModalMsg(hint)
+      setModalOpen(true)
+    }
+  }, [search])
+
+  const closeModal = () => {
+    setModalOpen(false)
+    // 清理 URL 上的 error 与 callbackUrl，避免重复弹出
+    router.replace('/auth/sign-in')
+  }
 
   return (
     <main className='py-10'>
@@ -131,6 +154,7 @@ export default function SignInPage() {
           </p>
         </div>
       </div>
+      <AlertModal open={modalOpen} title={t('auth.modal.registerFailed')} okText={t('auth.actions.ok')} message={modalMsg} onClose={closeModal} />
     </main>
   )
 }

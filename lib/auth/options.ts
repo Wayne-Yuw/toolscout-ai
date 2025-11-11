@@ -3,6 +3,10 @@ import Github from 'next-auth/providers/github'
 import Google from 'next-auth/providers/google'
 import Credentials from 'next-auth/providers/credentials'
 import { findUserByIdentifier, verifyPassword, findUserByOAuth } from '@/lib/auth/db-users'
+import { initGlobalProxyFromEnv } from '@/lib/net/proxy'
+
+// 初始化全局代理（可选，取决于环境变量是否存在）
+initGlobalProxyFromEnv()
 
 export const authOptions: NextAuthOptions = {
   // 自定义登录页与错误页都指向 /auth/sign-in
@@ -27,11 +31,13 @@ export const authOptions: NextAuthOptions = {
       clientId: process.env.GITHUB_CLIENT_ID || '',
       clientSecret: process.env.GITHUB_CLIENT_SECRET || '',
       allowDangerousEmailAccountLinking: true,
+      httpOptions: { timeout: Number(process.env.NEXTAUTH_PROVIDER_TIMEOUT_MS || 15000) },
     }),
     Google({
       clientId: process.env.GOOGLE_CLIENT_ID || '',
       clientSecret: process.env.GOOGLE_CLIENT_SECRET || '',
       allowDangerousEmailAccountLinking: true,
+      httpOptions: { timeout: Number(process.env.NEXTAUTH_PROVIDER_TIMEOUT_MS || 15000) },
     }),
     Credentials({
       id: 'credentials',

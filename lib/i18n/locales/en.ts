@@ -72,6 +72,7 @@ export default {
     errors: {
       usernameTaken: 'Username already taken',
       phoneTaken: 'Phone already registered',
+      oauthTimeout: 'Third-party authorization timed out or failed. Please try again.',
       network: 'Network error, please try again later',
       unknown: 'Submission failed, please try again later',
     },

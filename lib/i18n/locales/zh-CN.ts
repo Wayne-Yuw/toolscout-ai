@@ -72,6 +72,7 @@ export default {
     errors: {
       usernameTaken: '该用户名已被占用',
       phoneTaken: '该手机号已被注册',
+      oauthTimeout: '第三方授权超时或网络异常，请稍后重试',
       network: '网络异常，请稍后重试',
       unknown: '提交失败，请稍后再试',
     },
