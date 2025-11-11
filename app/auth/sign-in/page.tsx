@@ -54,7 +54,10 @@ export default function SignInPage() {
   const oauthBtn = (provider: 'github' | 'google', label: string) => (
     <button
       type='button'
-      onClick={() => signIn(provider, { callbackUrl: '/' })}
+      onClick={() => {
+        try { sessionStorage.setItem('oauthLastProvider', provider) } catch {}
+        signIn(provider, { callbackUrl: '/' })
+      }}
       className='flex w-full items-center justify-center gap-2 rounded-md border border-zinc-200 px-3 py-2 text-sm hover:bg-zinc-50'
     >
       <Icon kind={provider} />
@@ -67,7 +70,12 @@ export default function SignInPage() {
     const err = search?.get('error')
     if (!err) return
     if (err === 'OAuthCallback' || err === 'OAuthSignin') {
-      const hint = t('auth.errors.oauthTimeout') || '第三方授权超时或网络异常，请重试。'
+      let hint = t('auth.errors.oauthTimeout') || '第三方授权超时或网络异常，请重试。'
+      try {
+        const p = (sessionStorage.getItem('oauthLastProvider') || '') as 'github' | 'google'
+        if (p === 'github') hint = t('auth.errors.oauthTimeoutGithub') || hint
+        else if (p === 'google') hint = t('auth.errors.oauthTimeoutGoogle') || hint
+      } catch {}
       setModalMsg(hint)
       setModalOpen(true)
     }
@@ -154,7 +162,7 @@ export default function SignInPage() {
           </p>
         </div>
       </div>
-      <AlertModal open={modalOpen} title={t('auth.modal.registerFailed')} okText={t('auth.actions.ok')} message={modalMsg} onClose={closeModal} />
+      <AlertModal open={modalOpen} title={t('auth.modal.oauthError') || '授权登录失败'} okText={t('auth.actions.ok')} message={modalMsg} onClose={closeModal} />
     </main>
   )
 }

@@ -73,11 +73,14 @@ export default {
       usernameTaken: '该用户名已被占用',
       phoneTaken: '该手机号已被注册',
       oauthTimeout: '第三方授权超时或网络异常，请稍后重试',
+      oauthTimeoutGithub: 'GitHub 授权超时或网络异常，请稍后重试',
+      oauthTimeoutGoogle: 'Google 授权超时或网络异常，请稍后重试',
       network: '网络异常，请稍后重试',
       unknown: '提交失败，请稍后再试',
     },
     modal: {
       registerFailed: '注册失败',
+      oauthError: '授权登录失败',
     },
     actions: {
       ok: '确定',
